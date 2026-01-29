@@ -13,103 +13,104 @@
  */
 
 :root {
-  /* Core backgrounds */
-  --background: #f8f8f6;
-  --foreground: #1a1a1a;
+  /* Core backgrounds - Creme */
+  --background: #f6e1ce;
+  --foreground: #1d3a47;
 
   /* Card/surface backgrounds */
-  --card: #f8f8f6;
-  --card-foreground: #1a1a1a;
+  --card: #fdf5ed;
+  --card-foreground: #1d3a47;
 
-  /* Primary (inverted button style) */
-  --primary: #1a1a1a;
+  /* Primary CTA (Salmon button style) */
+  --primary: #ff6d63;
   --primary-foreground: #ffffff;
 
-  /* Accent color (warm brown) */
-  --accent: #8b7355;
+  /* Accent color (Salmon) */
+  --accent: #ff6d63;
   --accent-foreground: #ffffff;
-  --accent-muted: rgba(139, 115, 85, 0.1);
+  --accent-muted: rgba(255, 109, 99, 0.15);
 
-  /* Muted/secondary text */
-  --muted: rgba(0, 0, 0, 0.05);
-  --muted-foreground: #666666;
-  --secondary-foreground: #999999;
+  /* Muted/secondary text - blend of blue and salmon */
+  --muted: rgba(29, 58, 71, 0.06);
+  --muted-foreground: #4a6a7a;
+  --secondary-foreground: #8a6a6a;
 
-  /* Borders */
-  --border: rgba(0, 0, 0, 0.1);
-  --border-muted: rgba(0, 0, 0, 0.05);
+  /* Borders - subtle blue */
+  --border: rgba(29, 58, 71, 0.12);
+  --border-muted: rgba(29, 58, 71, 0.06);
 
   /* Input backgrounds */
-  --input: #ffffff;
+  --input: #fdf5ed;
 
-  /* Focus ring */
-  --ring: #8b7355;
+  /* Focus ring - salmon */
+  --ring: #ff6d63;
 
   /* Success (green) */
-  --success: #28c840;
-  --success-muted: rgba(40, 200, 64, 0.1);
+  --success: #22c55e;
+  --success-muted: rgba(34, 197, 94, 0.15);
 }
 
-/* Dark mode via system preference */
+/* Dark mode via system preference - keep light mode colors */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a1a1a;
-    --foreground: #f8f8f6;
+    /* Override to keep light mode - creme background */
+    --background: #f6e1ce;
+    --foreground: #1d3a47;
 
-    --card: rgba(255, 255, 255, 0.05);
-    --card-foreground: #f8f8f6;
+    --card: #fdf5ed;
+    --card-foreground: #1d3a47;
 
-    --primary: #f8f8f6;
-    --primary-foreground: #1a1a1a;
+    --primary: #ff6d63;
+    --primary-foreground: #ffffff;
 
-    --accent: #a68b6a;
+    --accent: #ff6d63;
     --accent-foreground: #ffffff;
-    --accent-muted: rgba(139, 115, 85, 0.2);
+    --accent-muted: rgba(255, 109, 99, 0.15);
 
-    --muted: rgba(255, 255, 255, 0.05);
-    --muted-foreground: #999999;
-    --secondary-foreground: #666666;
+    --muted: rgba(29, 58, 71, 0.06);
+    --muted-foreground: #4a6a7a;
+    --secondary-foreground: #8a6a6a;
 
-    --border: rgba(255, 255, 255, 0.1);
-    --border-muted: rgba(255, 255, 255, 0.05);
+    --border: rgba(29, 58, 71, 0.12);
+    --border-muted: rgba(29, 58, 71, 0.06);
 
-    --input: #1a1a1a;
+    --input: #fdf5ed;
 
-    --ring: #a68b6a;
+    --ring: #ff6d63;
 
-    --success: #28c840;
-    --success-muted: rgba(40, 200, 64, 0.1);
+    --success: #22c55e;
+    --success-muted: rgba(34, 197, 94, 0.15);
   }
 }
 
-/* Dark mode via class (for manual toggle support) */
+/* Dark mode via class - blue background variant */
 .dark {
-  --background: #1a1a1a;
-  --foreground: #f8f8f6;
+  --background: #1d3a47;
+  --foreground: #f6e1ce;
 
-  --card: rgba(255, 255, 255, 0.05);
-  --card-foreground: #f8f8f6;
+  --card: #254555;
+  --card-foreground: #f6e1ce;
 
-  --primary: #f8f8f6;
-  --primary-foreground: #1a1a1a;
+  --primary: #ff6d63;
+  --primary-foreground: #ffffff;
 
-  --accent: #a68b6a;
+  --accent: #ff6d63;
   --accent-foreground: #ffffff;
-  --accent-muted: rgba(139, 115, 85, 0.2);
+  --accent-muted: rgba(255, 109, 99, 0.2);
 
-  --muted: rgba(255, 255, 255, 0.05);
-  --muted-foreground: #999999;
-  --secondary-foreground: #666666;
+  --muted: rgba(255, 255, 255, 0.08);
+  --muted-foreground: #b8c8d0;
+  --secondary-foreground: #d4a8a4;
 
-  --border: rgba(255, 255, 255, 0.1);
-  --border-muted: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-muted: rgba(255, 255, 255, 0.06);
 
-  --input: #1a1a1a;
+  --input: #254555;
 
-  --ring: #a68b6a;
+  --ring: #ff6d63;
 
-  --success: #28c840;
-  --success-muted: rgba(40, 200, 64, 0.1);
+  --success: #22c55e;
+  --success-muted: rgba(34, 197, 94, 0.2);
 }
 
 html {

@@ -12,9 +12,10 @@ locals {
   name_suffix = var.deployment_name
 
   # URLs for cross-service configuration
-  control_plane_host = "open-inspect-control-plane-${local.name_suffix}.${var.cloudflare_worker_subdomain}.workers.dev"
+  # Customizable naming - just uses deployment_name directly
+  control_plane_host = "${local.name_suffix}-control-plane.${var.cloudflare_worker_subdomain}.workers.dev"
   control_plane_url  = "https://${local.control_plane_host}"
-  web_app_url        = "https://open-inspect-${local.name_suffix}.vercel.app"
+  web_app_url        = "https://${local.name_suffix}.vercel.app"
   ws_url             = "wss://${local.control_plane_host}"
 
   # Worker script paths (deterministic output locations)
@@ -30,14 +31,14 @@ module "session_index_kv" {
   source = "../../modules/cloudflare-kv"
 
   account_id     = var.cloudflare_account_id
-  namespace_name = "open-inspect-session-index-${local.name_suffix}"
+  namespace_name = "${local.name_suffix}-session-index"
 }
 
 module "slack_kv" {
   source = "../../modules/cloudflare-kv"
 
   account_id     = var.cloudflare_account_id
-  namespace_name = "open-inspect-slack-kv-${local.name_suffix}"
+  namespace_name = "${local.name_suffix}-slack-kv"
 }
 
 # =============================================================================
@@ -62,7 +63,7 @@ module "control_plane_worker" {
   source = "../../modules/cloudflare-worker"
 
   account_id  = var.cloudflare_account_id
-  worker_name = "open-inspect-control-plane-${local.name_suffix}"
+  worker_name = "${local.name_suffix}-control-plane"
   script_path = local.control_plane_script_path
 
   kv_namespaces = [
@@ -75,7 +76,7 @@ module "control_plane_worker" {
   service_bindings = [
     {
       binding_name = "SLACK_BOT"
-      service_name = "open-inspect-slack-bot-${local.name_suffix}"
+      service_name = "${local.name_suffix}-slack-bot"
     }
   ]
 
@@ -133,7 +134,7 @@ module "slack_bot_worker" {
   source = "../../modules/cloudflare-worker"
 
   account_id  = var.cloudflare_account_id
-  worker_name = "open-inspect-slack-bot-${local.name_suffix}"
+  worker_name = "${local.name_suffix}-slack-bot"
   script_path = local.slack_bot_script_path
 
   kv_namespaces = [
@@ -146,7 +147,7 @@ module "slack_bot_worker" {
   service_bindings = [
     {
       binding_name = "CONTROL_PLANE"
-      service_name = "open-inspect-control-plane-${local.name_suffix}"
+      service_name = "${local.name_suffix}-control-plane"
     }
   ]
 
@@ -180,7 +181,7 @@ module "slack_bot_worker" {
 module "web_app" {
   source = "../../modules/vercel-project"
 
-  project_name = "open-inspect-${local.name_suffix}"
+  project_name = local.name_suffix
   team_id      = var.vercel_team_id
   framework    = "nextjs"
 
@@ -278,13 +279,13 @@ module "modal_app" {
   modal_token_id     = var.modal_token_id
   modal_token_secret = var.modal_token_secret
 
-  app_name      = "open-inspect"
+  app_name      = local.name_suffix
   workspace     = var.modal_workspace
   deploy_path   = "${var.project_root}/packages/modal-infra"
   deploy_module = "deploy"
   source_hash   = data.external.modal_source_hash.result.hash
 
-  volume_name = "open-inspect-data"
+  volume_name = "${local.name_suffix}-data"
 
   secrets = [
     {

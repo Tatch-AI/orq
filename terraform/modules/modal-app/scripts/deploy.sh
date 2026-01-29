@@ -9,6 +9,9 @@
 
 set -euo pipefail
 
+# Add common paths where modal might be installed
+export PATH="$HOME/.local/bin:$PATH"
+
 echo "Deploying Modal app: ${APP_NAME}"
 echo "Deploy path: ${DEPLOY_PATH}"
 echo "Deploy module: ${DEPLOY_MODULE}"
