@@ -23,8 +23,8 @@ SANDBOX_DIR = Path(__file__).parent.parent / "sandbox"
 OPENCODE_VERSION = "latest"
 
 # Cache buster - change this to force Modal image rebuild
-# v32: Structured error responses for create-pull-request tool
-CACHE_BUSTER = "v32-structured-pr-errors"
+# v33: Add GitHub CLI (gh) for PR creation in sandbox
+CACHE_BUSTER = "v33-add-github-cli"
 
 # Base image with all development tools
 base_image = (
@@ -74,6 +74,15 @@ base_image = (
         # Add Bun to PATH for subsequent commands
         'echo "export BUN_INSTALL="$HOME/.bun"" >> /etc/profile.d/bun.sh',
         'echo "export PATH="$BUN_INSTALL/bin:$PATH"" >> /etc/profile.d/bun.sh',
+    )
+    # Install GitHub CLI (gh) for PR creation
+    .run_commands(
+        # Add GitHub CLI repository
+        "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg",
+        'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null',
+        "apt-get update",
+        "apt-get install -y gh",
+        "gh --version",
     )
     # Install Python tools
     .pip_install(
