@@ -2081,6 +2081,31 @@ export class SessionDO extends DurableObject<Env> {
     const now = Date.now();
     this.repository.updateSessionStatus(session.id, "archived", now);
 
+    // Terminate the sandbox if it's running
+    const sandboxWs = this.getSandboxWebSocket();
+    if (sandboxWs) {
+      console.log("[DO] Archive: taking snapshot and terminating sandbox");
+
+      // Update status to stopped first to block reconnection attempts
+      this.repository.updateSandboxStatus("stopped");
+
+      // Take snapshot so user can restore later if they unarchive
+      try {
+        await this.triggerSnapshot("session_archived");
+      } catch (e) {
+        console.error("[DO] Failed to snapshot during archive:", e);
+        // Continue with shutdown even if snapshot fails
+      }
+
+      // Send shutdown command and close WebSocket
+      this.safeSend(sandboxWs, { type: "shutdown" });
+      try {
+        sandboxWs.close(1000, "Session archived");
+      } catch (e) {
+        console.error("[DO] Failed to close sandbox WebSocket:", e);
+      }
+    }
+
     // Broadcast status change to all connected clients
     this.broadcast({
       type: "session_status",
