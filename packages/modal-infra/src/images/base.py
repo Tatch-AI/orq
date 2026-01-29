@@ -23,8 +23,8 @@ SANDBOX_DIR = Path(__file__).parent.parent / "sandbox"
 OPENCODE_VERSION = "latest"
 
 # Cache buster - change this to force Modal image rebuild
-# v34: Fix sandbox termination on session archive
-CACHE_BUSTER = "v34-fix-sandbox-termination"
+# v35: Force rebuild with all sandbox termination + gh CLI changes
+CACHE_BUSTER = "v35-force-rebuild"
 
 # Base image with all development tools
 base_image = (
