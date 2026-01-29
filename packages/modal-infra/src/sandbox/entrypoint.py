@@ -404,6 +404,11 @@ class SandboxSupervisor:
             # Check bridge process
             if self.bridge_process and self.bridge_process.returncode is not None:
                 exit_code = self.bridge_process.returncode
+                # Exit code 42 = session terminated (HTTP 410), don't restart
+                if exit_code == 42:
+                    print("[supervisor] Bridge exited with code 42 (session terminated), shutting down...")
+                    self.shutdown_event.set()
+                    break
                 print(f"[supervisor] Bridge exited (exit code: {exit_code}), restarting...")
                 await self.start_bridge()
 

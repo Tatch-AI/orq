@@ -23,8 +23,8 @@ SANDBOX_DIR = Path(__file__).parent.parent / "sandbox"
 OPENCODE_VERSION = "latest"
 
 # Cache buster - change this to force Modal image rebuild
-# v33: Add GitHub CLI (gh) for PR creation in sandbox
-CACHE_BUSTER = "v33-add-github-cli"
+# v34: Fix sandbox termination on session archive
+CACHE_BUSTER = "v34-fix-sandbox-termination"
 
 # Base image with all development tools
 base_image = (

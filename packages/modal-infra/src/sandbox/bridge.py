@@ -146,6 +146,7 @@ class AgentBridge:
         self.ws: ClientConnection | None = None
         self.shutdown_event = asyncio.Event()
         self.git_sync_complete = asyncio.Event()
+        self.session_terminated = False  # Set to True when session is terminated (HTTP 410)
 
         # Session state
         self.opencode_session_id: str | None = None
@@ -186,6 +187,7 @@ class AgentBridge:
                         "[bridge] Session terminated by control plane. "
                         "User can restore by sending a new prompt."
                     )
+                    self.session_terminated = True
                     self.shutdown_event.set()
                     break
                 except websockets.ConnectionClosed as e:
@@ -933,8 +935,13 @@ class AgentBridge:
         )
 
     async def _handle_shutdown(self) -> None:
-        """Handle shutdown command - graceful shutdown."""
-        print("[bridge] Shutdown requested")
+        """Handle shutdown command - graceful shutdown.
+
+        This is triggered when the session is archived or explicitly terminated.
+        Sets session_terminated to signal supervisor to shut down the entire sandbox.
+        """
+        print("[bridge] Shutdown requested by control plane")
+        self.session_terminated = True
         self.shutdown_event.set()
 
     def _resolve_github_token(self, cmd: dict[str, Any]) -> TokenResolution:
@@ -1095,8 +1102,12 @@ class AgentBridge:
                 print(f"[bridge] Failed to save session ID: {e}")
 
 
-async def main():
-    """Entry point for bridge process."""
+async def main() -> int:
+    """Entry point for bridge process.
+
+    Returns:
+        Exit code: 0 for normal exit, 42 for session terminated (signals supervisor to shut down)
+    """
     parser = argparse.ArgumentParser(description="Open-Inspect Agent Bridge")
     parser.add_argument("--sandbox-id", required=True, help="Sandbox ID")
     parser.add_argument("--session-id", required=True, help="Session ID for WebSocket connection")
@@ -1116,6 +1127,15 @@ async def main():
 
     await bridge.run()
 
+    # Exit code 42 signals to supervisor that session was terminated
+    # and the entire sandbox should shut down (not restart)
+    if bridge.session_terminated:
+        return 42
+    return 0
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import sys
+
+    exit_code = asyncio.run(main())
+    sys.exit(exit_code)
